@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1 class="display-4">Welcome to A-Z Household Services</h1>
+    <p class="lead mt-3">Your one-stop solution for finding the best household service professionals.</p>
+    
+    <div class="row mt-5">
+        <!-- About the Services Section -->
+        <div class="col-md-4">
+            <h3>Our Services</h3>
+            <p>We offer a wide range of services, from cleaning to repairs and maintenance, catering to all household needs.</p>
+        </div>
+        
+        <!-- Customer Section -->
+        <div class="col-md-4">
+            <h3>For Customers</h3>
+            <p>Looking for reliable household services? Register as a customer and explore our service offerings tailored to your needs.</p>
+            <a href="{{ url_for('customer_signup') }}" class="btn btn-primary mt-3">Register as Customer</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary mt-3">Customer Login</a>
+        </div>
+        
+        <!-- Professional Section -->
+        <div class="col-md-4">
+            <h3>For Service Professionals</h3>
+            <p>Join our platform to connect with customers seeking high-quality household services. Start your journey with us today!</p>
+            <a href="{{ url_for('professional_register') }}" class="btn btn-primary mt-3">Register as Professional</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary mt-3">Professional Login</a>
+        </div>
+    </div>
+
+    <!-- Call to Action for Admin Login (usually hidden for general users) -->
+    <div class="mt-5">
+        <h5 class="text-muted">Admin Access</h5>
+        <a href="{{ url_for('admin_login') }}" class="btn btn-link">Admin Login</a>
+        <!-- <button type="submit" name="login_type" value="user" class="btn btn-primary">Login</button> -->
+        
+    </div>
+</div>
+{% endblock %}

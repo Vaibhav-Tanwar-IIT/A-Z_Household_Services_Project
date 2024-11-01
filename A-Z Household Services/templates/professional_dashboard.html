@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Professional Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="text-center">Welcome to Professional Dashboard</h2>
+<nav class="nav nav-pills nav-fill">
+    <a class="nav-item nav-link active" href="#">Home</a>
+    <a class="nav-item nav-link" href="#">Search</a>
+    <a class="nav-item nav-link" href="#">Summary</a>
+    <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+<!-- Today's Services -->
+<div class="mt-4">
+    <h4>Today Services</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Contact Phone</th>
+                <th>Location (with pin code)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in today_services %}
+                <tr>
+                    <td>{{ service.customer_name }}</td>
+                    <td>{{ service.contact_phone }}</td>
+                    <td>{{ service.location }}</td>
+                    <td><button class="btn btn-success">Accept</button> <button class="btn btn-danger">Reject</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Closed Services -->
+<div class="mt-4">
+    <h4>Closed Services</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Contact Phone</th>
+                <th>Location (with pin code)</th>
+                <th>Date</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in closed_services %}
+                <tr>
+                    <td>{{ service.customer_name }}</td>
+                    <td>{{ service.contact_phone }}</td>
+                    <td>{{ service.location }}</td>
+                    <td>{{ service.date }}</td>
+                    <td>{{ service.rating }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Search Functionality -->
+<div class="mt-4">
+    <h4>Search Functionality</h4>
+    <div class="form-row align-items-center">
+        <div class="col-auto">
+            <label for="search-by" class="col-form-label">Search by:</label>
+        </div>
+        <div class="col-auto">
+            <select class="form-control" id="search-by">
+                <option>Date</option>
+                <option>Location</option>
+                <option>Name</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <input type="text" class="form-control" placeholder="Search text">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Statistical Charts -->
+<div class="mt-4">
+    <h4>Summary Shows Statistical Charts</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="reviewRatingsChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="serviceRequestsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+// Pie Chart for Reviews/Ratings
+var ctx1 = document.getElementById('reviewRatingsChart').getContext('2d');
+var reviewRatingsChart = new Chart(ctx1, {
+    type: 'pie',
+    data: {
+        labels: ['Excellent', 'Good', 'Average', 'Poor'],
+        datasets: [{
+            data: {{ reviews_data | tojson }},
+            backgroundColor: ['#4CAF50', '#FFC107', '#FF5722', '#F44336'],
+        }]
+    }
+});
+
+// Bar Chart for Service Requests
+var ctx2 = document.getElementById('serviceRequestsChart').getContext('2d');
+var serviceRequestsChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: ['Received', 'Closed', 'Rejected'],
+        datasets: [{
+            data: {{ requests_data | tojson }},
+            backgroundColor: ['#2196F3', '#8BC34A', '#FF5252']
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="text-center">Welcome to Customer Dashboard</h2>
+<nav class="nav nav-pills nav-fill">
+    <a class="nav-item nav-link active" href="#">Home</a>
+    <a class="nav-item nav-link" href="#">Search</a>
+    <a class="nav-item nav-link" href="#">Summary</a>
+    <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+<!-- Service Selection -->
+<div class="mt-4">
+    <h4>Looking For?</h4>
+    <div class="d-flex justify-content-around">
+        {% for option in service_options %}
+        <button class="btn btn-outline-primary">{{ option }}</button>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Service History -->
+<div class="mt-4">
+    <h4>Service History</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service Name</th>
+                <th>Professional Name</th>
+                <th>Phone No.</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in service_history %}
+            <tr>
+                <td>{{ service.id }}</td>
+                <td>{{ service.service_name }}</td>
+                <td>{{ service.professional_name }}</td>
+                <td>{{ service.phone }}</td>
+                <td>
+                    {% if service.status == 'Requested' %}
+                    <button class="btn btn-warning">Requested</button>
+                    {% else %}
+                    <button class="btn btn-success" data-toggle="modal" data-target="#remarkModal"
+                        data-service-id="{{ service.id }}" data-service-name="{{ service.service_name }}"
+                        data-professional-name="{{ service.professional_name }}" data-phone="{{ service.phone }}">
+                        Close
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Best Packages -->
+<div class="mt-4">
+    <h4>Best Cleaning Packages</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Package Name</th>
+                <th>Details</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for package in salon_packages %}
+            <tr>
+                <td>{{ package.id }}</td>
+                <td>{{ package.name }}</td>
+                <td>{{ package.details }}</td>
+                <td>{{ package.price }}</td>
+                <td><button class="btn btn-primary">Book</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="remarkModal" tabindex="-1" role="dialog" aria-labelledby="remarkModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ url_for('submit_remark') }}" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="remarkModalLabel">Service Remarks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="service_id" id="modalServiceId">
+
+                    <div class="form-group">
+                        <label for="serviceName">Service Name</label>
+                        <input type="text" class="form-control" name="service_name" id="modalServiceName" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="professionalName">Professional Name</label>
+                        <input type="text" class="form-control" name="professional_name" id="modalProfessionalName"
+                            readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Contact No.</label>
+                        <input type="text" class="form-control" name="phone" id="modalPhone" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Service Rating</label>
+                        <select name="rating" class="form-control" required>
+                            <option value="5">★★★★★</option>
+                            <option value="4">★★★★</option>
+                            <option value="3">★★★</option>
+                            <option value="2">★★</option>
+                            <option value="1">★</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="remarks">Remarks</label>
+                        <textarea name="remarks" class="form-control" rows="3"
+                            placeholder="Write your remarks here..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Statistics -->
+<div class="mt-4">
+    <h4>Summary Shows Statistical Charts</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="serviceRequestsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#remarkModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var serviceId = button.data('service-id');
+        var serviceName = button.data('service-name');
+        var professionalName = button.data('professional-name');
+        var phone = button.data('phone');
+
+        var modal = $(this);
+        modal.find('#modalServiceId').val(serviceId);
+        modal.find('#modalServiceName').val(serviceName);
+        modal.find('#modalProfessionalName').val(professionalName);
+        modal.find('#modalPhone').val(phone);
+    });
+    // Bar Chart for Service Requests
+    var ctx = document.getElementById('serviceRequestsChart').getContext('2d');
+    var serviceRequestsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Requested', 'Closed', 'Assigned'],
+            datasets: [{
+                data: {{ request_stats | tojson }},
+        backgroundColor: ['#2196F3', '#8BC34A', '#FF5252']
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}

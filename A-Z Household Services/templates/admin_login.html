@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Login</h3>
+    <form action="{{ url_for('admin_dashboard') }}" method="POST">
+        <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <button type="submit" name="login_type" value="admin" class="btn btn-danger">Admin Login</button>
+    </form>
+</div>
+{% endblock %}

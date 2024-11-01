@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Search Results for "{{ search_text }}" ({{ search_by }})</h3>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    {% if search_by == 'service' %}
+                        <th>Service ID</th>
+                        <th>Service Name</th>
+                        <th>Description</th>
+                        <th>Base Price</th>
+                    {% elif search_by == 'customer' %}
+                        <th>Request ID</th>
+                        <th>Customer Name</th>
+                        <th>Assigned Professional</th>
+                        <th>Status</th>
+                    {% elif search_by == 'professional' %}
+                        <th>Professional ID</th>
+                        <th>Email</th>
+                        <th>Experience (yrs)</th>
+                        <th>Service Name</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                    <tr>
+                        {% if search_by == 'service' %}
+                            <td>{{ result.id }}</td>
+                            <td>{{ result.name }}</td>
+                            <td>{{ result.description }}</td>
+                            <td>{{ result.base_price }}</td>
+                        {% elif search_by == 'customer' %}
+                            <td>{{ result.id }}</td>
+                            <td>{{ result.customer_name }}</td>
+                            <td>{{ result.professional_name }}</td>
+                            <td>{{ result.status }}</td>
+                        {% elif search_by == 'professional' %}
+                            <td>{{ result.id }}</td>
+                            <td>{{ result.email }}</td>
+                            <td>{{ result.experience }}</td>
+                            <td>{{ result.service_name }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %}
