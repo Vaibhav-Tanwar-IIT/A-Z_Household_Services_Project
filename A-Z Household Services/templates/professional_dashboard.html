@@ -17,19 +17,25 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Customer Name</th>
                 <th>Contact Phone</th>
                 <th>Location (with pin code)</th>
+                <th>Service Requested</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for service in today_services %}
                 <tr>
+                    <td>{{ service.id }}</td>
                     <td>{{ service.customer_name }}</td>
                     <td>{{ service.contact_phone }}</td>
                     <td>{{ service.location }}</td>
-                    <td><button class="btn btn-success">Accept</button> <button class="btn btn-danger">Reject</button></td>
+                    <td>{{ service.service_name }}</td>  
+                    <td><button class="btn btn-success"><a href="{{ url_for('accept_service', service_name=service.service_name) }}" style="text-decoration: none; color: white;">Accept</a></button>
+                        <button class="btn btn-danger">
+                            <a href="{{ url_for('reject_service', service_id=service.id) }}" style="text-decoration: none; color: white;">Reject</a></button></td>
                 </tr>
             {% endfor %}
         </tbody>

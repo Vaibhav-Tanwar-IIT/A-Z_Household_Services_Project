@@ -31,11 +31,11 @@
                     <tr>
                         {% if search_by == 'service' %}
                             <td>{{ result.id }}</td>
-                            <td>{{ result.name }}</td>
+                            <td>{{ result.service_name }}</td>
                             <td>{{ result.description }}</td>
                             <td>{{ result.base_price }}</td>
                         {% elif search_by == 'customer' %}
-                            <td>{{ result.id }}</td>
+                            <td>{{ resuvlt.id }}</td>
                             <td>{{ result.customer_name }}</td>
                             <td>{{ result.professional_name }}</td>
                             <td>{{ result.status }}</td>

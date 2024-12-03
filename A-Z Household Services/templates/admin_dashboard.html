@@ -117,7 +117,7 @@
                     <td>{{ professional.service_name }}</td>
                     <td>
                         <a href="#" class="btn btn-sm btn-success">Approve</a>
-                        <a href="#" class="btn btn-sm btn-danger">Reject</a>
+                        <a href="{{ url_for('reject_professional', professional_id=professional.id)}}" class="btn btn-sm btn-danger">Reject</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -135,7 +135,6 @@
                     <th>Assigned Professional</th>
                     <th>Requested By</th>
                     <th>Status (R/A/C)</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -146,9 +145,6 @@
                     <td>{{ request.professional_name }}</td>
                     <td>{{ request.customer_name }}</td>
                     <td>{{ request.status }}</td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-info">View</a>
-                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
